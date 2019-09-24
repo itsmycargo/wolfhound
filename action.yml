@@ -1,0 +1,8 @@
+name: 'Wolfhound'
+description: 'Wolfhound chases all rabbits of bad code and missing commas.'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'edit-3'
+  color: 'purple'
