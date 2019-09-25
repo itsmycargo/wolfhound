@@ -7,18 +7,33 @@ LABEL com.github.actions.color="grey-dark"
 
 LABEL maintainer="ItsMyCargo Engineering <oss@itsmycargo.com>"
 
+# Packages
 RUN apk add --update --no-cache \
   jq \
-  nodejs \
-  npm
+  nodejs
 
+# Ruby
 COPY Gemfile Gemfile.lock ./
 RUN apk add --no-cache --virtual .build-deps \
   build-base cmake openssl-dev \
   && gem install -g \
   && apk del .build-deps
 
-RUN npm install -g eslint @itsmycargo/eslint-config
+# (Java|Type)script
+ENV PREFIX=/usr/local/node_modules
+ENV PATH=$PREFIX/.bin:$PATH
+ENV NODE_PATH=$PREFIX
+ENV NPM_CONFIG_PREFIX=$PREFIX
+
+RUN mkdir $PREFIX
+COPY package.json yarn.lock ./
+
+RUN apk add --no-cache --virtual .build-deps \
+  yarn \
+  && yarn config set prefix $PREFIX \
+  && yarn install --modules-folder $PREFIX \
+  && apk del .build-deps \
+  && ln -s $PREFIX/.bin/eslint /usr/bin/eslint
 
 COPY entrypoint.sh /entrypoint.sh
 
