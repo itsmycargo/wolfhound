@@ -1,6 +1,7 @@
 #!/bin/sh -l
 
 set -e
+set -x
 
 echo "Pronto $(/usr/local/bundle/bin/pronto verbose-version)"
 echo ""
@@ -21,4 +22,5 @@ fi
 : "${FORMATTER:=$(test -n "${GITHUB_BASE_REF}" && echo "text github_pr_review" || echo "text")}"
 
 cd "${GITHUB_WORKSPACE}"
-PRONTO_GITHUB_ACCESS_TOKEN=${GITHUB_TOKEN} /usr/local/bundle/bin/pronto run -c "${TARGET}" -f "${FORMATTER}" "$@"
+PRONTO_GITHUB_ACCESS_TOKEN=${GITHUB_TOKEN} \
+  /usr/local/bundle/bin/pronto run -c "${TARGET}" -f "${FORMATTER}" "$@"
