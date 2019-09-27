@@ -16,6 +16,7 @@ then
 fi
 
 : "${GITHUB_WORKSPACE:=/workspace}"
+: "${GITHUB_BASE_REF:=master}"
 : "${TARGET:="origin/${GITHUB_BASE_REF}"}"
 : "${FORMATTER:=$(test -n "${GITHUB_BASE_REF}" && echo "text github_pr_review" || echo "text")}"
 

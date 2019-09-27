@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@itsmycargo/eslint-config": "^0.1.6",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^5.3.0",
-    "eslint-plugin-jest": "^22.17.0"
+    "@itsmycargo/eslint-config": "^0.1.11-alpha.0",
+    "@itsmycargo/stylelint": "^0.0.8-alpha.0",
+    "@itsmycargo/tsconfig": "^0.0.8-alpha.0",
+    "@itsmycargo/tslint-config": "^0.0.8-alpha.0"
   }
 }

@@ -12,6 +12,11 @@ RUN apk add --update --no-cache \
   jq \
   nodejs
 
+# Shellcheck
+ARG SHELLCHECK_VERSION="stable"
+RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
+      | tar -xJv && cp "shellcheck-${SHELLCHECK_VERSION}/shellcheck" /usr/bin/
+
 # Ruby
 COPY Gemfile Gemfile.lock ./
 RUN apk add --no-cache --virtual .build-deps \
