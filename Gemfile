@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'pronto'
+gem 'pronto', git: 'https://github.com/prontolabs/pronto.git', branch: 'master'
+
 gem 'pronto-brakeman'
 gem 'pronto-eslint_npm'
 gem 'pronto-fasterer'
