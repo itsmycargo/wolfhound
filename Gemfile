@@ -9,4 +9,5 @@ gem 'pronto-rails_schema'
 gem 'pronto-rubocop'
 gem 'pronto-shellcheck'
 gem 'pronto-stylelint'
-gem 'rubocop-performance'
+
+gem 'rubocop-itsmycargo'
