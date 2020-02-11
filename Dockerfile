@@ -49,7 +49,8 @@ RUN mkdir $PREFIX
 COPY package.json yarn.lock ./
 RUN yarn config set prefix $PREFIX \
   && yarn install --modules-folder $PREFIX \
-  && ln -s $PREFIX/.bin/eslint /usr/bin/eslint
+  && ln -s $PREFIX/.bin/eslint /usr/bin/eslint \
+  && ln -s $PREFIX/.bin/stylelint /usr/bin/stylelint
 
 COPY entrypoint.sh /entrypoint.sh
 

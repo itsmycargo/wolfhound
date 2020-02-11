@@ -15,12 +15,12 @@ then
   eval "$(jq -r '@sh "export GITHUB_PULL_REQUEST_ID=\(.number)"' "${GITHUB_EVENT_PATH}")"
 fi
 
-: "${GITHUB_WORKSPACE:=/workspace}"
-: "${GITHUB_BASE_REF:=master}"
-: "${TARGET:="origin/${GITHUB_BASE_REF}"}"
 : "${FORMATTER:=$(test -n "${GITHUB_BASE_REF}" && echo "text github_pr_review github_combined_status" || echo "text")}"
+: "${GITHUB_BASE_REF:=master}"
+: "${GITHUB_WORKSPACE:=/workspace}"
+: "${TARGET:="origin/${GITHUB_BASE_REF}"}"
 
 cd "${GITHUB_WORKSPACE}"
 PRONTO_GITHUB_ACCESS_TOKEN=${GITHUB_TOKEN} \
-  PRONTO_PULL_REQUEST_ID=${GITHUB_PULLREQUEST_ID} \
-  /app/bin/pronto run -c "${TARGET}" -f "${FORMATTER}" "$@"
+  PRONTO_PULL_REQUEST_ID=${GITHUB_PULL_REQUEST_ID} \
+  /app/bin/pronto run -c "${TARGET}" -f ${FORMATTER} "$@"
