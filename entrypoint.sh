@@ -1,13 +1,12 @@
 #!/bin/sh -l
 
 set -e
-set -x
 
-echo "Pronto $(/usr/local/bundle/bin/pronto verbose-version)"
+echo "Pronto $(/app/bin/pronto verbose-version)"
 echo ""
 echo "Runners"
 echo "==============="
-/usr/local/bundle/bin/pronto list
+/app/bin/pronto list
 echo ""
 
 
@@ -24,4 +23,4 @@ fi
 cd "${GITHUB_WORKSPACE}"
 PRONTO_GITHUB_ACCESS_TOKEN=${GITHUB_TOKEN} \
   PRONTO_PULL_REQUEST_ID=${GITHUB_PULLREQUEST_ID} \
-  /usr/local/bundle/bin/pronto run -c "${TARGET}" -f "${FORMATTER}" "$@"
+  /app/bin/pronto run -c "${TARGET}" -f "${FORMATTER}" "$@"
