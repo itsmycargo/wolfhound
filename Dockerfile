@@ -33,9 +33,8 @@ RUN curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock ./
-RUN bundle config set deployment 'true' \
-  && bundle install --frozen \
+COPY Gemfile ./
+RUN bundle install \
   && bundle binstub pronto
 
 # (Java|Type)script
@@ -46,7 +45,7 @@ ENV NPM_CONFIG_PREFIX=$PREFIX
 
 RUN mkdir $PREFIX
 
-COPY package.json yarn.lock ./
+COPY package.json ./
 RUN yarn config set prefix $PREFIX \
   && yarn install --modules-folder $PREFIX \
   && ln -s $PREFIX/.bin/eslint /usr/bin/eslint \

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'pronto', git: 'https://github.com/prontolabs/pronto.git', branch: 'master'

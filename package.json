@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@itsmycargo/eslint-config": "^1.0.2",
-    "@itsmycargo/stylelint": "^1.0.2",
-    "@itsmycargo/tsconfig": "^1.0.2",
-    "@itsmycargo/eslint-config-typescript": "^1.0.2"
+    "@itsmycargo/eslint-config": "*",
+    "@itsmycargo/stylelint": "*",
+    "@itsmycargo/tsconfig": "*",
+    "@itsmycargo/eslint-config-typescript": "*"
   }
 }
