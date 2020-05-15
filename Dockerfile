@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
       git \
       jq \
       locales \
-      shellcheck
+      shellcheck \
+      yamllint
 
 RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
       && locale-gen C.UTF-8 \
@@ -33,7 +34,7 @@ RUN curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY Gemfile ./
+COPY Gemfile Gemfile.lock ./
 RUN bundle install \
   && bundle binstub pronto
 
