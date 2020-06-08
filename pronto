@@ -1,0 +1,11 @@
+#!/bin/sh -l
+
+set -e
+
+: "${CHANGE_TARGET:="master"}"
+: "${TARGET:="origin/${CHANGE_TARGET}"}"
+
+PRONTO_GITHUB_ACCESS_TOKEN=${GITHUB_TOKEN} \
+  PRONTO_PULL_REQUEST_ID=${CHANGE_ID} \
+  PRONTO_FORMAT="%{runner}: %{msg}" \
+  /app/bin/pronto run -c "${TARGET}" -f text "$@"

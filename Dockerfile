@@ -52,6 +52,9 @@ RUN yarn config set prefix $PREFIX \
   && ln -s $PREFIX/.bin/eslint /usr/bin/eslint \
   && ln -s $PREFIX/.bin/stylelint /usr/bin/stylelint
 
-COPY entrypoint.sh /entrypoint.sh
+COPY pronto /pronto
 
-ENTRYPOINT ["/entrypoint.sh"]
+RUN mkdir -p /workspace
+WORKDIR /workspace
+
+ENTRYPOINT ["/pronto"]
