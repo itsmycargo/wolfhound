@@ -52,9 +52,9 @@ RUN yarn config set prefix $PREFIX \
   && ln -s $PREFIX/.bin/eslint /usr/bin/eslint \
   && ln -s $PREFIX/.bin/stylelint /usr/bin/stylelint
 
-COPY pronto /pronto
+COPY wolfhound /wolfhound
 
 RUN mkdir -p /workspace
 WORKDIR /workspace
 
-ENTRYPOINT ["/pronto"]
+ENTRYPOINT ["/wolfhound"]
