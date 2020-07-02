@@ -91,7 +91,7 @@ GEM
       rugged (~> 0.24, >= 0.23.0)
     psych (3.1.0)
     public_suffix (4.0.5)
-    rack (2.2.2)
+    rack (2.2.3)
     rainbow (3.0.0)
     reek (5.6.0)
       codeclimate-engine-rb (~> 0.4.0)
