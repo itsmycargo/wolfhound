@@ -1,0 +1,5 @@
+inherit_gem:
+  rubocop-itsmycargo:
+    - config/base.yml
+    - config/rails.yml
+    - config/rspec.yml

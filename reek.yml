@@ -1,0 +1,8 @@
+---
+detectors:
+  # We don't need documentation comments
+  IrresponsibleModule:
+    enabled: false
+  # This is handled by Rubocop
+  LongParameterList:
+    enabled: true

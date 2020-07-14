@@ -8,6 +8,4 @@ set -e
 
 test -n "${CONTINUOUS_INTEGRATION}" && FORMAT="json"
 
-# PRONTO_GITHUB_ACCESS_TOKEN=${GITHUB_TOKEN} \
-#   PRONTO_PULL_REQUEST_ID=${CHANGE_ID} \
 /app/bin/pronto run -c "${TARGET}" -f "${FORMAT}" "$@"

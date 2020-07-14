@@ -38,6 +38,9 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install \
   && bundle binstub pronto
 
+COPY reek.yml /root/.reek.yml
+COPY rubocop.yml /root/.rubocop.yml
+
 # (Java|Type)script
 ENV PREFIX=/usr/local/node_modules
 ENV PATH=$PREFIX/.bin:$PATH

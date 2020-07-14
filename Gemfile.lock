@@ -35,7 +35,7 @@ GEM
       path_expander (~> 1.0)
       ruby_parser (~> 3.0)
       sexp_processor (~> 4.0)
-    gitlab (4.16.0)
+    gitlab (4.16.1)
       httparty (~> 0.14, >= 0.14.0)
       terminal-table (~> 1.5, >= 1.5.1)
     httparty (0.18.1)
