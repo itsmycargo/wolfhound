@@ -3,6 +3,23 @@ detectors:
   # We don't need documentation comments
   IrresponsibleModule:
     enabled: false
-  # This is handled by Rubocop
+  # These are handled by Rubocop
   LongParameterList:
-    enabled: true
+    enabled: false
+  TooManyMethods:
+    enabled: false
+  TooManyStatements:
+    enabled: false
+  # Allow utility functions as private
+  UtilityFunction:
+    public_methods_only: true
+
+# Relax migrations
+directories:
+  "**/db/migrate/*.rb":
+    FeatureEnvy:
+      enabled: false
+    TooManyStatements:
+      enabled: false
+    UncommunicativeVariableName:
+      enabled: false
