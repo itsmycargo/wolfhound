@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+
+require 'flay'
+require 'rexml/document'
+
+
+class FlayCheckstyle
+  def self.run(output = "checkstyle.xml")
+    new(output).run
+  end
+
+  def initialize(output)
+    @output = output
+
+    @document = REXML::Document.new.tap do |d|
+      d << REXML::XMLDecl.new
+    end
+    @checkstyle = REXML::Element.new('checkstyle', @document)
+  end
+
+  def run
+    offences = {}
+
+    data.each do |item|
+      item.locations.each do |loc|
+        (offences[loc.file] ||= []) << {
+          line: loc.line,
+          message: format("%<match>s code found in :%<name>s (mass = %<mass>d)<br />%<locations>s",
+            match: item.identical? ? "IDENTICAL" : "Similar",
+            name: item.name,
+            mass: item.mass,
+            locations: (item.locations - [loc]).map { |loc| "#{loc.file}:#{loc.line}" }.join("<br />")
+          ),
+          severity: item.identical? ? "error" : "warning"
+        }
+      end
+    end
+
+    offences.each do |file, messages|
+      REXML::Element.new('file', @checkstyle).tap do |f|
+        f.attributes['name'] = file
+        messages.each do |message|
+          REXML::Element.new('error', f).tap do |e|
+            e.add_attributes({
+              "line" => message[:line],
+              "severity" => message[:severity],
+              "message" => message[:message],
+              "source" => 'com.puppycrawl.tools.checkstyle.flay'
+            })
+          end
+        end
+      end
+    end
+
+    @document.write(output: File.open(@output, "w"), indent: 2)
+  end
+
+  def flay
+    @flay ||= ::Flay.run()
+  end
+
+  def data
+    @data ||= flay.analyze
+  end
+end
+
+FlayCheckstyle.run(*ARGV)

@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gem "brakeman"
+gem "fasterer"
+gem "flay"
+gem "reek"
+gem "rubocop"
+gem "rubocop-checkstyle_formatter"
+gem "rubocop-itsmycargo"

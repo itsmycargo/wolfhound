@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+
+require "fasterer"
+require "fasterer/config"
+require "pathname"
+require "rexml/document"
+
+class FastererCheckstyle
+  def self.run(path = ".", output = "checkstyle.xml")
+    new(path, output).run
+  end
+
+  def initialize(path, output)
+    @path = path
+    @output = output
+
+    @document = REXML::Document.new.tap do |d|
+      d << REXML::XMLDecl.new
+    end
+    @checkstyle = REXML::Element.new('checkstyle', @document)
+  end
+
+  def run
+
+    files = Dir[File.join(@path, '**', '*.rb')].map do |ruby_file_path|
+      Pathname(ruby_file_path).relative_path_from(@path).to_s
+    end
+
+    offences = {}
+
+    files.each do |file|
+      analyzer = ::Fasterer::Analyzer.new(file)
+      analyzer.scan
+
+      errors = []
+
+      analyzer.errors.each do |error|
+        next if config.ignored_speedups.include?(error.name)
+
+        (offences[file] ||= []) << {
+          line: error.line_number,
+          message: error.explanation
+        }
+
+      end
+    end
+
+    offences.each do |file, messages|
+      REXML::Element.new('file', @checkstyle).tap do |f|
+        f.attributes['name'] = file
+        messages.each do |message|
+          REXML::Element.new('error', f).tap do |e|
+            e.add_attributes({
+              "line" => message[:line],
+              "severity" => 'info',
+              "message" => message[:message],
+              "source" => 'com.puppycrawl.tools.checkstyle.fasterer'
+            })
+          end
+        end
+      end
+    end
+
+    @document.write(output: File.open(@output, "w"), indent: 2)
+  end
+
+  private
+
+  def config
+    @fasterer_config ||= ::Fasterer::Config.new
+  end
+end
+
+FastererCheckstyle.run(*ARGV)

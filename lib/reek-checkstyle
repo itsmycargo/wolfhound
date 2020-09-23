@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'reek'
+require 'reek/cli/options'
+require 'reek/examiner'
+require 'reek/source/source_locator'
+require 'rexml/document'
+
+class ReekCheckstyle
+  SEVERITIES = {
+    'UncommunicativeMethodName' => 'error',
+    'UncommunicativeParameterName' => 'error',
+    'UncommunicativeVariableName' => 'error',
+    'UnusedPrivateMethod' => 'error'
+  }
+
+  def self.run(path = ".", output = "reek-result.xml")
+    new(path, output).run
+  end
+
+  def initialize(path, output)
+    @path = path
+    @output = output
+
+    @document = REXML::Document.new.tap do |d|
+      d << REXML::XMLDecl.new
+    end
+    @checkstyle = REXML::Element.new('checkstyle', @document)
+  end
+
+  def run
+    files = Dir[File.join(@path, '**', '*.rb')]
+    Reek::Source::SourceLocator.new(files)
+      .sources
+      .map {|src| Reek::Examiner.new(src) }
+      .each do |examined_file|
+
+
+      REXML::Element.new('file', @checkstyle).tap do |f|
+        f.attributes['name'] = examined_file.origin
+        examined_file.smells.each do |smell|
+          smell.lines.each do |line|
+            REXML::Element.new('error', f).tap do |e|
+              e.add_attributes({
+                "line" => line.to_s,
+                "severity" => SEVERITIES.fetch(smell.smell_type) { "warning" },
+                "message" => "<em>#{smell.smell_type}</em> - #{smell.message}",
+                "source" => 'com.puppycrawl.tools.checkstyle.reek'
+              })
+            end
+          end
+        end
+      end
+    end
+
+    @document.write(output: File.open(@output, "w"), indent: 2)
+  end
+end
+
+ReekCheckstyle.run(*ARGV)

@@ -1,63 +1,103 @@
-FROM ruby:2.7
+FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+FROM golangci/golangci-lint:v1.31.0 as golangci-lint
+FROM yoheimuta/protolint:v0.26.0 as protolint
+FROM koalaman/shellcheck:v0.7.1 as shellcheck
+FROM wata727/tflint:0.20.2 as tflint
+FROM alpine/terragrunt:0.13.4 as terragrunt
+FROM mvdan/shfmt:v3.1.2 as shfmt
+FROM accurics/terrascan:d182f1c as terrascan
+FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 
-LABEL com.github.actions.name="Wolfhound"
-LABEL com.github.actions.description="Bark to your code quality and style errors"
-LABEL com.github.actions.icon="code"
-LABEL com.github.actions.color="grey-dark"
+FROM python:alpine
 
-LABEL maintainer="ItsMyCargo Engineering <oss@itsmycargo.com>"
+LABEL maintainer="ItsMyCargo SRE <sre@itsmycargo.com>"
 
-RUN apt-get update && apt-get install -y \
-      apt-transport-https \
-      automake \
-      build-essential \
-      cmake \
-      git \
-      jq \
-      locales \
-      shellcheck \
-      yamllint
+RUN apk add --no-cache \
+    bash \
+    coreutils \
+    curl \
+    file \
+    gcc \
+    git git-lfs\
+    go \
+    gnupg \
+    icu-libs \
+    jq \
+    krb5-libs \
+    libc-dev libxml2-dev libxml2-utils libgcc \
+    libcurl libintl libssl1.1 libstdc++ \
+    linux-headers \
+    make \
+    musl-dev \
+    npm nodejs-current \
+    openjdk8-jre \
+    py3-setuptools \
+    readline-dev \
+    ruby ruby-dev ruby-bundler ruby-rdoc
 
-RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
-      && locale-gen C.UTF-8 \
-      && /usr/sbin/update-locale LANG=C.UTF-8
+COPY dependencies/* /
 
-RUN curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-      && echo "deb https://deb.nodesource.com/node_12.x stretch main" | tee /etc/apt/sources.list.d/nodesource.list \
-      && apt-get update && apt-get install -y nodejs
+################################
+# Installs python dependencies #
+################################
+RUN pip3 install --no-cache-dir pipenv
+RUN pipenv install --system
 
-RUN curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-      && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-      && apt-get update && apt-get install -y yarn
+####################
+# Run NPM Installs #
+####################
+RUN npm config set package-lock false \
+    && npm config set loglevel error \
+    && npm --no-cache install
 
-# Ruby
-RUN mkdir -p /app
-WORKDIR /app
+#############################
+# Add node packages to path #
+#############################
+ENV PATH="/node_modules/.bin:${PATH}"
 
-COPY Gemfile Gemfile.lock ./
-RUN bundle install \
-  && bundle binstub pronto
+##############################
+# Installs ruby dependencies #
+##############################
+RUN bundle install
 
-COPY reek.yml /root/.reek.yml
-COPY rubocop.yml /root/.rubocop.yml
+######################
+# Install shellcheck #
+######################
+COPY --from=shellcheck /bin/shellcheck /usr/bin/
 
-# (Java|Type)script
-ENV PREFIX=/usr/local/node_modules
-ENV PATH=$PREFIX/.bin:$PATH
-ENV NODE_PATH=$PREFIX
-ENV NPM_CONFIG_PREFIX=$PREFIX
+#####################
+# Install Go Linter #
+#####################
+COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
-RUN mkdir $PREFIX
+##################
+# Install TFLint #
+##################
+COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 
-COPY package.json ./
-RUN yarn config set prefix $PREFIX \
-  && yarn install --modules-folder $PREFIX \
-  && ln -s $PREFIX/.bin/eslint /usr/bin/eslint \
-  && ln -s $PREFIX/.bin/stylelint /usr/bin/stylelint
+##################
+# Install Terrascan #
+##################
+COPY --from=terrascan /go/bin/terrascan /usr/bin/
+RUN terrascan init
 
-COPY wolfhound /wolfhound
+######################
+# Install Terragrunt #
+######################
+COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
+
+################################
+# Install editorconfig-checker #
+################################
+COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
+
+# Copy scripts
+COPY lib /action
+
+# Copy tool configuration
+COPY config /root
 
 RUN mkdir -p /workspace
 WORKDIR /workspace
 
-ENTRYPOINT ["/wolfhound"]
+ENTRYPOINT ["/action/linter.sh"]
