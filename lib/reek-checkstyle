@@ -23,6 +23,8 @@ class ReekCheckstyle
     @path = path
     @output = output
 
+    @configuration = ::Reek::Configuration::AppConfiguration.from_path(nil)
+
     @document = REXML::Document.new.tap do |d|
       d << REXML::XMLDecl.new
     end
@@ -33,7 +35,7 @@ class ReekCheckstyle
     files = Dir[File.join(@path, '**', '*.rb')]
     Reek::Source::SourceLocator.new(files)
       .sources
-      .map {|src| Reek::Examiner.new(src) }
+      .map {|src| Reek::Examiner.new(src, configuration: @configuration) }
       .each do |examined_file|
 
 
