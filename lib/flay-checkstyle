@@ -31,7 +31,7 @@ class FlayCheckstyle
             mass: item.mass,
             locations: (item.locations - [loc]).map { |loc| "#{loc.file}:#{loc.line}" }.join("<br />")
           ),
-          severity: item.identical? ? "error" : "warning"
+          severity: item.identical? ? "error" : "info"
         }
       end
     end
