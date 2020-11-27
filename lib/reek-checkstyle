@@ -9,9 +9,9 @@ require 'rexml/document'
 
 class ReekCheckstyle
   SEVERITIES = {
-    'UncommunicativeMethodName' => 'error',
-    'UncommunicativeParameterName' => 'error',
-    'UncommunicativeVariableName' => 'error',
+    'UncommunicativeMethodName' => 'warning',
+    'UncommunicativeParameterName' => 'warning',
+    'UncommunicativeVariableName' => 'warning',
     'UnusedPrivateMethod' => 'error'
   }
 
@@ -46,7 +46,7 @@ class ReekCheckstyle
             REXML::Element.new('error', f).tap do |e|
               e.add_attributes({
                 "line" => line.to_s,
-                "severity" => SEVERITIES.fetch(smell.smell_type) { "warning" },
+                "severity" => SEVERITIES.fetch(smell.smell_type) { "info" },
                 "message" => "<em>#{smell.smell_type}</em> - #{smell.message}",
                 "source" => 'com.puppycrawl.tools.checkstyle.reek'
               })
