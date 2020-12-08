@@ -4,7 +4,7 @@ FROM yoheimuta/protolint:v0.26.1 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.21.0 as tflint
 FROM alpine/terragrunt:0.14.0 as terragrunt
-FROM mvdan/shfmt:v3.2.0 as shfmt
+FROM mvdan/shfmt:v3.2.1 as shfmt
 FROM accurics/terrascan:d182f1c as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 
