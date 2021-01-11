@@ -1,4 +1,4 @@
-FROM mstruebing/editorconfig-checker:2.2.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.3.1 as editorconfig-checker
 FROM golangci/golangci-lint:v1.35.0 as golangci-lint
 FROM yoheimuta/protolint:v0.27.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
