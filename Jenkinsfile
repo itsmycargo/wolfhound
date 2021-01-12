@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage("Build") {
       steps {
-        buildDocker("wolfhound")
+        buildDocker()
       }
     }
   }
