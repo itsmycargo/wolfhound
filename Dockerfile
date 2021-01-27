@@ -1,5 +1,5 @@
 FROM mstruebing/editorconfig-checker:2.3.1 as editorconfig-checker
-FROM golangci/golangci-lint:v1.35.2 as golangci-lint
+FROM golangci/golangci-lint:v1.36.0 as golangci-lint
 FROM yoheimuta/protolint:v0.27.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.23.1 as tflint
