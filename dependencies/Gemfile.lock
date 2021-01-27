@@ -8,7 +8,7 @@ GEM
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
     ast (2.4.1)
-    brakeman (4.10.1)
+    brakeman (5.0.0)
     colorize (0.8.1)
     concurrent-ruby (1.1.7)
     erubis (2.7.0)
